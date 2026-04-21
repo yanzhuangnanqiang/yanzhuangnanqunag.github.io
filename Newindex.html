@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清风手帐 · 赛琳娜</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', '微软雅黑', system-ui, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ----- 视频背景（赛琳娜森系壁纸） ----- */
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -2;
+            /* 轻微降低亮度并增加一点点青绿滤镜，更贴合壁纸氛围 */
+            filter: brightness(0.85) saturate(1.05) hue-rotate(-5deg);
+        }
+
+        /* 柔光遮罩层（保留光影，同时让文字更清晰） */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, 
+                rgba(180, 220, 200, 0.1) 0%, 
+                rgba(120, 180, 160, 0.05) 100%);
+            backdrop-filter: blur(1px);
+            z-index: -1;
+        }
+
+        /* ----- 主容器：垂直居中 + 滚动支持（内容多时可滚） ----- */
+        .wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* ----- 玻璃态手帐卡片（毛玻璃效果，透出视频光影） ----- */
+        .journal-card {
+            max-width: 750px;
+            width: 100%;
+            background: #3b927540;
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border-radius: 36px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 40px rgba(30, 60, 50, 0.15),
+                        0 0 0 1px rgba(210, 240, 230, 0.3) inset;
+            color: #1e3a3a;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        /* 标题与文字 */
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 350;
+            letter-spacing: 4px;
+            text-align: center;
+            color: #1e4a4a;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.6);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: #2a5e5e;
+            font-style: italic;
+            border-bottom: 1px dashed rgba(70, 110, 100, 0.3);
+            padding-bottom: 20px;
+        }
+
+        /* 手帐表格风格（类似 README 的今日手帐） */
+        .handbook {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 12px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px 25px;
+            border-radius: 28px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .handbook-item {
+            display: contents;
+        }
+
+        .handbook-label {
+            font-weight: 500;
+            color: #1d4e4e;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .handbook-value {
+            color: #0b3a3a;
+            font-weight: 400;
+        }
+
+        /* 统计卡片区域（GitHub 数据） */
+        .stats-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stats-grid img {
+            border-radius: 16px;
+            box-shadow: 0 6px 16px rgba(30, 60, 50, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            max-width: 100%;
+            height: auto;
+            background: rgba(245, 255, 250, 0.2);
+            backdrop-filter: blur(4px);
+        }
+
+        /* 链接按钮组 */
+        .link-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 15px 0 5px;
+        }
+
+        .btn {
+            padding: 10px 28px;
+            border-radius: 40px;
+            background: rgba(235, 250, 245, 0.3);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            color: #144d4d;
+            text-decoration: none;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn:hover {
+            background: rgba(200, 240, 230, 0.5);
+            border-color: #9ad8c5;
+            color: #0a3a3a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(30, 80, 70, 0.15);
+        }
+
+        /* 访客计数器与签名 */
+        .footer-note {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #28635c;
+        }
+
+        .visitor-badge {
+            margin-bottom: 10px;
+        }
+
+        .signature {
+            opacity: 0.8;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .journal-card { padding: 30px 20px; }
+            .handbook { grid-template-columns: 1fr; gap: 8px; }
+            .handbook-label { margin-top: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 赛琳娜动态壁纸视频（请替换 src 为你的 mp4 文件名） -->
+    <video class="bg-video" autoplay loop muted playsinline>
+        <!-- 请将 "your-selena-video.mp4" 替换为你自己的视频文件名 -->
+        <source src="战双帕弥什-赛琳娜-夏光.mp4" type="video/mp4">
+        <!-- 后备背景色 -->
+    </video>
+    <div class="overlay"></div>
+
+    <div class="wrapper">
+        <div class="journal-card">
+
+            <!-- 主标题 -->
+            <h1>☾ 清风手帐 ☽</h1>
+            <div class="subtitle">「始于书信，敬于才华，合于性格，久于品德。」</div>
+
+            <!-- 手帐信息表（直接借鉴你的 README 内容） -->
+            <div class="handbook">
+                <div class="handbook-item">
+                    <span class="handbook-label">🌱 正在学习</span>
+                    <span class="handbook-value">C 语言 · Rust 语言</span>
+                </div>
+                <div class="handbook-item">
+                    <span class="handbook-label">📚 兴趣领域</span>
+                    <span class="handbook-value">编程 · 阅读 · 独立开发</span>
+                </div>
+                <div class="handbook-item">
+                    <span class="handbook-label">🤝 寻找伙伴</span>
+                    <span class="handbook-value">同样坚持终身学习的人</span>
+                </div>
+                <div class="handbook-item">
+                    <span class="handbook-label">📬 联系方式</span>
+                    <span class="handbook-value">私信</span>
+                </div>
+                <div class="handbook-item">
+                    <span class="handbook-label">✨ 一个事实</span>
+                    <span class="handbook-value">胆小，但代码写得很认真。</span>
+                </div>
+            </div>
+
+            <!-- GitHub 统计卡片（动态图片，透明背景融入玻璃卡） -->
+            <div class="stats-grid">
+                <!-- GitHub 总览卡片 -->
+                <img src="https://github-readme-stats.vercel.app/api?username=yanzhuangnanqiang&show_icons=true&hide_border=true&bg_color=ffffff00&title_color=1e4a4a&icon_color=2e7d7d&text_color=1a4a4a&hide_title=true" alt="GitHub Stats" width="48%" />
+                <!-- 常用语言卡片 -->
+                <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=yanzhuangnanqiang&layout=compact&hide_border=true&bg_color=ffffff00&title_color=1e4a4a&text_color=1a4a4a" alt="Top Langs" width="45%" />
+            </div>
+
+            <!-- 链接按钮 -->
+            <div class="link-group">
+                <a class="btn" href="https://github.com/yanzhuangnanqiang" target="_blank">📂 GitHub</a>
+                <a class="btn" href="#" target="_blank">📝 博客</a>
+                <a class="btn" href="README.md" target="_blank">📋 README</a>
+            </div>
+
+            <!-- 访客计数 & 签名 -->
+            <div class="footer-note">
+                <div class="visitor-badge">
+                    <img src="https://komarev.com/ghpvc/?username=yanzhuangnanqiang&color=9ad8c5&style=flat-square" alt="visitors">
+                </div>
+                <div class="signature">
+                    <samp>“写代码，安静点也挺好。” 🍃</samp>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
