@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>清风手帐 · 赛琳娜</title>
+    <title>清风手帐 · 塞琳娜</title>
     <style>
         * {
             margin: 0;
@@ -25,11 +25,9 @@
             height: 100vh;
             object-fit: cover;
             z-index: -2;
-            /* 轻微降低亮度并增加一点点青绿滤镜，更贴合壁纸氛围 */
             filter: brightness(0.85) saturate(1.05) hue-rotate(-5deg);
         }
 
-        /* 柔光遮罩层（保留光影，同时让文字更清晰） */
         .overlay {
             position: fixed;
             inset: 0;
@@ -40,7 +38,7 @@
             z-index: -1;
         }
 
-        /* ----- 主容器：垂直居中 + 滚动支持（内容多时可滚） ----- */
+        /* ----- 主容器 ----- */
         .wrapper {
             position: relative;
             z-index: 10;
@@ -52,11 +50,11 @@
             padding: 40px 20px;
         }
 
-        /* ----- 玻璃态手帐卡片（毛玻璃效果，透出视频光影） ----- */
+        /* ----- 玻璃态手帐卡片（宽度加宽以容纳三栏） ----- */
         .journal-card {
-            max-width: 750px;
+            max-width: 1100px;
             width: 100%;
-            background: #3b927540;
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(12px) saturate(180%);
             -webkit-backdrop-filter: blur(12px) saturate(180%);
             border-radius: 36px;
@@ -69,7 +67,7 @@
             transition: all 0.3s ease;
         }
 
-        /* 标题与文字 */
+        /* 标题区 */
         h1 {
             font-size: 2.8rem;
             font-weight: 350;
@@ -90,65 +88,146 @@
             padding-bottom: 20px;
         }
 
-        /* 手帐表格风格（类似 README 的今日手帐） */
-        .handbook {
+        /* ----- 三栏手帐内页布局（Grid） ----- */
+        .handbook-grid {
             display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 12px 15px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0 30px;
+        }
+
+        /* 通用小卡片样式（每个栏目的底板） */
+        .section-card {
             background: rgba(255, 255, 255, 0.2);
-            padding: 20px 25px;
-            border-radius: 28px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 20px 18px;
             border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: transform 0.2s;
         }
 
-        .handbook-item {
-            display: contents;
+        .section-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
         }
 
-        .handbook-label {
-            font-weight: 500;
-            color: #1d4e4e;
-            letter-spacing: 1px;
+        .section-title {
+            font-weight: 400;
+            letter-spacing: 2px;
+            color: #1e4a4a;
+            margin-bottom: 18px;
+            font-size: 1.3rem;
+            border-left: 3px solid #5f9b8a;
+            padding-left: 12px;
+        }
+
+        /* ----- 左栏：项目橱窗 ----- */
+        .project-item {
+            margin-bottom: 20px;
+        }
+        .project-header {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .project-icon {
+            font-size: 1.8rem;
+        }
+        .project-name {
+            font-weight: 500;
+            color: #1a4a4a;
+        }
+        .project-desc {
+            font-size: 0.9rem;
+            color: #1e4e4e;
+            margin-left: 36px;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        .project-tags {
+            margin-left: 36px;
+            font-size: 0.8rem;
+            color: #3b7a6e;
+            letter-spacing: 0.5px;
         }
 
-        .handbook-value {
-            color: #0b3a3a;
-            font-weight: 400;
+        /* ----- 中栏：此刻 · 清风 ----- */
+        .moment-time {
+            font-size: 2.8rem;
+            font-weight: 250;
+            letter-spacing: 6px;
+            text-align: center;
+            color: #1e4a4a;
+            text-shadow: 0 2px 10px rgba(255,255,240,0.6);
+            margin: 10px 0 15px;
+        }
+        .moment-quote {
+            text-align: center;
+            font-size: 1.1rem;
+            font-style: italic;
+            margin: 15px 0;
+            padding: 0 5px;
+            color: #1e4e4e;
+        }
+        .moment-weather {
+            text-align: center;
+            opacity: 0.8;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            border-top: 1px dashed rgba(70,110,100,0.3);
+            padding-top: 15px;
         }
 
-        /* 统计卡片区域（GitHub 数据） */
-        .stats-grid {
+        /* 原有的个人速写（保留一些信息，但以更融合的方式） */
+        .quick-facts {
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        .quick-facts p {
+            margin: 8px 0;
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin: 25px 0;
+            align-items: center;
+            gap: 8px;
         }
 
-        .stats-grid img {
-            border-radius: 16px;
-            box-shadow: 0 6px 16px rgba(30, 60, 50, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            max-width: 100%;
-            height: auto;
-            background: rgba(245, 255, 250, 0.2);
-            backdrop-filter: blur(4px);
+        /* ----- 右栏：枕边书单 ----- */
+        .book-list {
+            list-style: none;
+        }
+        .book-list li {
+            padding: 12px 0;
+            border-bottom: 1px dashed rgba(70,110,100,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .book-list li:last-child {
+            border-bottom: none;
+        }
+        .book-emoji {
+            font-size: 1.5rem;
+            min-width: 36px;
+        }
+        .book-info {
+            font-size: 0.95rem;
+        }
+        .book-title {
+            font-weight: 500;
+        }
+        .book-author {
+            font-size: 0.8rem;
+            opacity: 0.8;
         }
 
-        /* 链接按钮组 */
+        /* 底部链接、访客计数 */
         .link-group {
             display: flex;
             justify-content: center;
             gap: 20px;
             flex-wrap: wrap;
-            margin: 15px 0 5px;
+            margin: 25px 0 10px;
         }
-
         .btn {
             padding: 10px 28px;
             border-radius: 40px;
@@ -162,7 +241,6 @@
             transition: 0.3s;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
-
         .btn:hover {
             background: rgba(200, 240, 230, 0.5);
             border-color: #9ad8c5;
@@ -171,78 +249,122 @@
             box-shadow: 0 10px 20px rgba(30, 80, 70, 0.15);
         }
 
-        /* 访客计数器与签名 */
         .footer-note {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
             font-size: 0.9rem;
             color: #28635c;
         }
 
-        .visitor-badge {
-            margin-bottom: 10px;
-        }
-
-        .signature {
-            opacity: 0.8;
-        }
-
-        /* 响应式调整 */
-        @media (max-width: 600px) {
-            h1 { font-size: 2rem; }
+        /* 响应式：手机屏改为单栏堆叠 */
+        @media (max-width: 800px) {
+            .handbook-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            h1 { font-size: 2.2rem; }
             .journal-card { padding: 30px 20px; }
-            .handbook { grid-template-columns: 1fr; gap: 8px; }
-            .handbook-label { margin-top: 5px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 赛琳娜动态壁纸视频（请替换 src 为你的 mp4 文件名） -->
+    <!-- 视频背景 -->
     <video class="bg-video" autoplay loop muted playsinline>
-        <!-- 请将 "your-selena-video.mp4" 替换为你自己的视频文件名 -->
         <source src="xiaguang.mp4" type="video/mp4">
-        <!-- 后备背景色 -->
     </video>
     <div class="overlay"></div>
 
     <div class="wrapper">
         <div class="journal-card">
 
-            <!-- 主标题 -->
             <h1>☾ 清风手帐 ☽</h1>
             <div class="subtitle">「始于书信，敬于才华，合于性格，久于品德。」</div>
 
-            <!-- 手帐信息表（直接借鉴你的 README 内容） -->
-            <div class="handbook">
-                <div class="handbook-item">
-                    <span class="handbook-label">🌱 正在学习</span>
-                    <span class="handbook-value">C 语言 · Rust 语言</span>
+            <!-- 三栏内容：项目 · 此刻 · 书单 -->
+            <div class="handbook-grid">
+                
+                <!-- 左：项目橱窗 -->
+                <div class="section-card">
+                    <div class="section-title">🪴 培育中</div>
+                    <div class="project-item">
+                        <div class="project-header">
+                            <span class="project-icon">🦀</span>
+                            <span class="project-name">Rust 笔记工具</span>
+                        </div>
+                        <div class="project-desc">命令行日记本，支持加密与标签检索</div>
+                        <div class="project-tags">#Rust #CLI</div>
+                    </div>
+                    <div class="project-item">
+                        <div class="project-header">
+                            <span class="project-icon">🌐</span>
+                            <span class="project-name">个人网站 v2</span>
+                        </div>
+                        <div class="project-desc">你正在看的站点，手工打磨中</div>
+                        <div class="project-tags">#HTML/CSS #设计</div>
+                    </div>
+                    <div class="project-item">
+                        <div class="project-header">
+                            <span class="project-icon">📚</span>
+                            <span class="project-name">阅读追踪器</span>
+                        </div>
+                        <div class="project-desc">年度阅读报告生成器</div>
+                        <div class="project-tags">#Python #可视化</div>
+                    </div>
                 </div>
-                <div class="handbook-item">
-                    <span class="handbook-label">📚 兴趣领域</span>
-                    <span class="handbook-value">编程 · 阅读 · 独立开发</span>
+
+                <!-- 中：此刻 · 清风（时钟 + 签名 + 个人线索） -->
+                <div class="section-card">
+                    <div class="section-title">🍃 此刻</div>
+                    <div class="moment-time" id="liveTime">--:--</div>
+                    <div class="moment-quote" id="dailyQuote">清风徐来，水波不兴。</div>
+                    <div class="moment-weather">🍵 宜：专注 · 忌：浮躁</div>
+                    
+                    <!-- 融合原手帐里的关键信息（寻找伙伴/一个事实） -->
+                    <div class="quick-facts">
+                        <p><span>🤝</span> 寻找同样坚持终身学习的人</p>
+                        <p><span>✨</span> 胆小，但代码写得很认真。</p>
+                    </div>
                 </div>
-                <div class="handbook-item">
-                    <span class="handbook-label">🤝 寻找伙伴</span>
-                    <span class="handbook-value">同样坚持终身学习的人</span>
-                </div>
-                <div class="handbook-item">
-                    <span class="handbook-label">📬 联系方式</span>
-                    <span class="handbook-value">私信</span>
-                </div>
-                <div class="handbook-item">
-                    <span class="handbook-label">✨ 一个事实</span>
-                    <span class="handbook-value">胆小，但代码写得很认真。</span>
+
+                <!-- 右：枕边书单 -->
+                <div class="section-card">
+                    <div class="section-title">📖 枕边书</div>
+                    <ul class="book-list">
+                        <li>
+                            <span class="book-emoji">🌲</span>
+                            <div class="book-info">
+                                <div class="book-title">编码</div>
+                                <div class="book-author">Charles Petzold</div>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="book-emoji">🍂</span>
+                            <div class="book-info">
+                                <div class="book-title">Rust 程序设计</div>
+                                <div class="book-author">第二版</div>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="book-emoji">✨</span>
+                            <div class="book-info">
+                                <div class="book-title">你当像鸟飞往你的山</div>
+                                <div class="book-author">Tara Westover</div>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- 原联系方式融合在这里，不另起表格 -->
+                    <div style="margin-top: 20px; font-size: 0.9rem; border-top: 1px dashed rgba(70,110,100,0.3); padding-top: 15px;">
+                        <p>📬 联系 · 私信</p>
+                        <p style="margin-top: 5px;">🌱 正在学习 C · Rust</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- GitHub 统计卡片（动态图片，透明背景融入玻璃卡） -->
-            <div class="stats-grid">
-                <!-- GitHub 总览卡片 -->
-                <img src="https://github-readme-stats.vercel.app/api?username=yanzhuangnanqiang&show_icons=true&hide_border=true&bg_color=ffffff00&title_color=1e4a4a&icon_color=2e7d7d&text_color=1a4a4a&hide_title=true" alt="GitHub Stats" width="48%" />
-                <!-- 常用语言卡片 -->
-                <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=yanzhuangnanqiang&layout=compact&hide_border=true&bg_color=ffffff00&title_color=1e4a4a&text_color=1a4a4a" alt="Top Langs" width="45%" />
+            <!-- GitHub 统计卡片（保留，融入透明背景） -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 10px 0;">
+                <img src="https://github-readme-stats.vercel.app/api?username=yanzhuangnanqiang&show_icons=true&hide_border=true&bg_color=ffffff00&title_color=1e4a4a&icon_color=2e7d7d&text_color=1a4a4a&hide_title=true" alt="GitHub Stats" style="border-radius: 16px; border: 1px solid rgba(255,255,255,0.4); max-width: 48%; height: auto;">
+                <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=yanzhuangnanqiang&layout=compact&hide_border=true&bg_color=ffffff00&title_color=1e4a4a&text_color=1a4a4a" alt="Top Langs" style="border-radius: 16px; border: 1px solid rgba(255,255,255,0.4); max-width: 40%; height: auto;">
             </div>
 
             <!-- 链接按钮 -->
@@ -254,15 +376,46 @@
 
             <!-- 访客计数 & 签名 -->
             <div class="footer-note">
-                <div class="visitor-badge">
+                <div style="margin-bottom: 8px;">
                     <img src="https://komarev.com/ghpvc/?username=yanzhuangnanqiang&color=9ad8c5&style=flat-square" alt="visitors">
                 </div>
-                <div class="signature">
+                <div>
                     <samp>“写代码，安静点也挺好。” 🍃</samp>
                 </div>
             </div>
+
         </div>
     </div>
+
+    <!-- 实时时钟 + 随机签名脚本 -->
+    <script>
+        (function() {
+            // 时钟更新
+            function updateTime() {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false, hour: '2-digit', minute: '2-digit' });
+                const timeEl = document.getElementById('liveTime');
+                if (timeEl) timeEl.textContent = timeStr;
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            // 随机清风手帐签名
+            const quotes = [
+                '“慢慢来，比较快。”',
+                '“代码如诗，写给自己。”',
+                '“今天也是被 Rust 编译器教育的一天。”',
+                '“安静地敲键盘，是成年人的冥想。”',
+                '“始于书信，敬于才华。”',
+                '“清风徐来，水波不兴。”'
+            ];
+            const quoteEl = document.getElementById('dailyQuote');
+            if (quoteEl) {
+                const randomIdx = Math.floor(Math.random() * quotes.length);
+                quoteEl.textContent = quotes[randomIdx];
+            }
+        })();
+    </script>
 
 </body>
 </html>
