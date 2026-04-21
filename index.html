@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>清风手帐 · Hidden-Goose</title>
+    <title>清风手帐 · 塞琳娜</title>
     <style>
         * {
             margin: 0;
@@ -18,7 +18,7 @@
             background-color: #0f2a2a;
         }
 
-        /* 视频背景 */
+        /* 视频背景 —— 快速显现 */
         .bg-video {
             position: fixed;
             top: 0;
@@ -29,7 +29,7 @@
             z-index: -3;
             filter: brightness(0.85) saturate(1.05) hue-rotate(-5deg);
             opacity: 0;
-            animation: gentleAppear 3.5s ease-out forwards;
+            animation: gentleAppear 2s ease-out forwards;
         }
 
         /* 柔光遮罩 */
@@ -42,7 +42,7 @@
             backdrop-filter: blur(1px);
             z-index: -2;
             opacity: 0;
-            animation: gentleAppear 3s ease-out 0.5s forwards;
+            animation: gentleAppear 2.5s ease-out 0.3s forwards;
         }
 
         /* 树叶飘落画布 */
@@ -55,7 +55,7 @@
             z-index: -1;
             pointer-events: none;
             opacity: 0;
-            animation: gentleAppear 4s ease-out 0.8s forwards;
+            animation: gentleAppear 3s ease-out 0.5s forwards;
         }
 
         /* 鼠标跟随光斑 */
@@ -70,7 +70,7 @@
             transition: transform 0.12s ease-out;
             mix-blend-mode: screen;
             opacity: 0;
-            animation: gentleAppear 3s ease-out 1.5s forwards;
+            animation: gentleAppear 2.5s ease-out 0.8s forwards;
         }
 
         /* 主容器 */
@@ -85,7 +85,7 @@
             padding: 40px 20px;
         }
 
-        /* 玻璃态手帐卡片 —— 加宽以容纳三栏 */
+        /* 玻璃态手帐卡片 —— 超慢邂逅淡入（保持不变） */
         .journal-card {
             max-width: 1100px;
             width: 100%;
@@ -103,16 +103,16 @@
             position: relative;
             
             opacity: 0;
-            transform: scale(0.96) translateY(15px);
-            filter: blur(8px);
-            animation: encounterReveal 3.2s cubic-bezier(0.23, 1, 0.32, 1) 0.3s forwards;
+            transform: scale(0.94) translateY(20px);
+            filter: blur(12px);
+            animation: encounterReveal 5.5s cubic-bezier(0.23, 1, 0.32, 1) 0.4s forwards;
         }
 
         @keyframes encounterReveal {
             0% {
-                opacity: 0.05;
-                transform: scale(0.96) translateY(15px);
-                filter: blur(8px);
+                opacity: 0.02;
+                transform: scale(0.94) translateY(20px);
+                filter: blur(12px);
             }
             100% {
                 opacity: 1;
@@ -126,24 +126,24 @@
             100% { opacity: 1; }
         }
 
-        /* 内部元素依次淡入 */
+        /* 内部元素依次淡入，延迟保持原样 */
         .fade-stagger {
             opacity: 0;
-            animation: fadeItem 1.2s ease-out forwards;
+            animation: fadeItem 1.5s ease-out forwards;
         }
 
         @keyframes fadeItem {
-            0% { opacity: 0; transform: translateY(8px); }
+            0% { opacity: 0; transform: translateY(10px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* 延迟分配 */
-        h1 { animation-delay: 0.6s; }
-        .subtitle { animation-delay: 1.0s; }
-        .handbook-grid { animation-delay: 1.5s; }
-        .stats-grid { animation-delay: 2.0s; }
-        .link-group { animation-delay: 2.5s; }
-        .footer-note { animation-delay: 3.0s; }
+        /* 延迟分配（不变） */
+        h1 { animation-delay: 1.2s; }
+        .subtitle { animation-delay: 2.0s; }
+        .handbook-grid { animation-delay: 2.8s; }
+        .stats-grid { animation-delay: 3.8s; }
+        .link-group { animation-delay: 4.5s; }
+        .footer-note { animation-delay: 5.0s; }
 
         /* 古风题词 */
         .ancient-verse {
@@ -154,7 +154,7 @@
             font-size: 0.9rem;
             color: #2e5e5e;
             text-shadow: 0 0 6px rgba(255,255,240,0.6);
-            animation: fadeItem 1.2s ease-out 0.3s forwards;
+            animation: fadeItem 1.5s ease-out 0.4s forwards;
         }
 
         /* 左上角印章 */
@@ -170,7 +170,7 @@
             letter-spacing: 2px;
             border-left: 1px solid rgba(90, 130, 110, 0.3);
             padding-left: 6px;
-            animation: fadeItem 1.2s ease-out 0.8s forwards;
+            animation: fadeItem 1.5s ease-out 1.0s forwards;
         }
 
         h1 {
@@ -415,7 +415,7 @@
             <h1 class="fade-stagger">☾ 清风手帐 ☽</h1>
             <div class="subtitle fade-stagger">「始于书信，敬于才华，合于性格，久于品德。」</div>
 
-            <!-- 三栏内容：项目 · 此刻 · 书单 -->
+            <!-- 三栏内容 -->
             <div class="handbook-grid fade-stagger">
                 
                 <!-- 左：项目橱窗 -->
@@ -447,7 +447,7 @@
                     </div>
                 </div>
 
-                <!-- 中：此刻 · 清风（时钟 + 签名 + 个人线索） -->
+                <!-- 中：此刻 · 清风 -->
                 <div class="section-card">
                     <div class="section-title">🍃 此刻</div>
                     <div class="moment-time" id="liveTime">--:--</div>
